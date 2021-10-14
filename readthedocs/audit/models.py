@@ -190,5 +190,16 @@ class AuditLog(TimeStampedModel):
                 self.log_organization_slug = organization.slug
         super().save(**kwargs)
 
+    def auth_backend_display(self):
+        backend = self.auth_backend or ''
+        backend_displays = {
+            'TemporaryAccessTokenBackend': _('shared link'),
+            'TemporaryAccessPasswordBackend': _('shared password'),
+        }
+        for name, display in backend_displays.items():
+            if name in backend:
+                return display
+        return ''
+
     def __str__(self):
         return self.action

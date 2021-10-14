@@ -13,7 +13,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import ListView, TemplateView, View
+from django.views.generic import ListView, TemplateView
 from formtools.wizard.views import SessionWizardView
 from vanilla import (
     CreateView,
@@ -35,7 +35,6 @@ from readthedocs.builds.models import (
 )
 from readthedocs.core.history import UpdateChangeReasonPostView
 from readthedocs.core.mixins import ListViewWithForm, PrivateViewMixin
-from readthedocs.core.utils import trigger_build
 from readthedocs.core.utils.extend import SettingsOverrideObject
 from readthedocs.integrations.models import HttpExchange, Integration
 from readthedocs.oauth.services import registry
@@ -1001,7 +1000,7 @@ class SearchAnalyticsBase(ProjectAdminMixin, PrivateViewMixin, TemplateView):
         project = self.get_project()
         now = timezone.now().date()
         retention_limit = self._get_retention_days_limit(project)
-        if retention_limit in [None, -1]:
+        if retention_limit is None:
             # Unlimited.
             days_ago = project.pub_date.date()
         else:
@@ -1091,7 +1090,7 @@ class TrafficAnalyticsViewBase(ProjectAdminMixin, PrivateViewMixin, TemplateView
         project = self.get_project()
         now = timezone.now().date()
         retention_limit = self._get_retention_days_limit(project)
-        if retention_limit in [None, -1]:
+        if retention_limit is None:
             # Unlimited.
             days_ago = project.pub_date.date()
         else:
